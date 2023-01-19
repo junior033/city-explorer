@@ -3,6 +3,7 @@ import React from 'react';
 import axios from 'axios';
 import { Card } from 'react-bootstrap';
 import Weather from './Weather';
+import Movies from './Movies';
 
 
 class App extends React.Component {
@@ -18,7 +19,8 @@ class App extends React.Component {
       lat: '',
       long: '',
       displayName: '',
-      weatherData: []
+      weatherData: [],
+      movieData: []
     }
   }
 
@@ -32,7 +34,7 @@ class App extends React.Component {
   handleGetWeather = async (lat, lon) => {
 
     try {
-      let url = `${process.env.REACT_APP_SERVER}/weather?lat=${lat}&lon=${lon}&searchQuery=${this.state.city}`
+      let url = `${process.env.REACT_APP_SERVER}/weather?lat=${lat}&lon=${lon}`
       let weatherDataFromAxios = await axios.get(url);
 
       this.setState({
@@ -48,6 +50,25 @@ class App extends React.Component {
     }
   }
 
+  getMovies = async (city) => {
+
+    try {
+      let url = `${process.env.REACT_APP_SERVER}/movies?&query=${city}`;
+      let movieDataFromAxios = await axios.get(url);
+
+      this.setState({
+        movieData: movieDataFromAxios.data
+      })
+      
+    } catch (error) {
+      this.setState({
+        error: true,
+        errorMessage: error.message
+      })
+    }
+  }
+
+
   getCityData = async (e) => {
     e.preventDefault();
 
@@ -58,6 +79,7 @@ class App extends React.Component {
       let lon = cityDataFromAxios.data[0].lon;
 
       this.handleGetWeather(lat, lon);
+      this.getMovies(this.state.city);
 
       this.setState({
         cityData: cityDataFromAxios.data[0],
@@ -97,6 +119,7 @@ class App extends React.Component {
           </Card>
         }
         <Weather weather={this.state.weatherData} />
+        <Movies movies={this.state.movieData} />
       </>
     )
   };
