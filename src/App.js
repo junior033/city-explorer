@@ -2,6 +2,8 @@ import './App.css';
 import React from 'react';
 import axios from 'axios';
 import { Card } from 'react-bootstrap';
+import Weather from './Weather';
+
 
 class App extends React.Component {
 
@@ -16,6 +18,7 @@ class App extends React.Component {
       lat: '',
       long: '',
       displayName: '',
+      weatherData: []
     }
   }
 
@@ -25,13 +28,36 @@ class App extends React.Component {
     })
   }
 
+
+  handleGetWeather = async (lat, lon) => {
+
+    try {
+      let url = `${process.env.REACT_APP_SERVER}/weather?lat=${lat}&lon=${lon}&searchQuery=${this.state.city}`
+      let weatherDataFromAxios = await axios.get(url);
+
+      this.setState({
+        weatherData: weatherDataFromAxios.data
+      })
+
+      console.log('WEATHER:: ', weatherDataFromAxios.data);
+    } catch (error) {
+      this.setState({
+        error: true,
+        errorMessage: error.message
+      })
+    }
+  }
+
   getCityData = async (e) => {
     e.preventDefault();
 
     try {
       let url = `https://us1.locationiq.com/v1/search?key=${process.env.REACT_APP_LOCATIONIQ_API_KEY}&q=${this.state.city}&format=json`;
       let cityDataFromAxios = await axios.get(url);
-      console.log(cityDataFromAxios.data[0]);
+      let lat = cityDataFromAxios.data[0].lat;
+      let lon = cityDataFromAxios.data[0].lon;
+
+      this.handleGetWeather(lat, lon);
 
       this.setState({
         cityData: cityDataFromAxios.data[0],
@@ -51,6 +77,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(this.state.weatherData.description);
     return (
       <>
         <h1>City Explorer</h1>
@@ -69,6 +96,7 @@ class App extends React.Component {
             <Card.Img src={this.state.citymap} />
           </Card>
         }
+        <Weather weather={this.state.weatherData} />
       </>
     )
   };
