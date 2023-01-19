@@ -68,6 +68,7 @@ class App extends React.Component {
     }
   }
 
+  
 
   getCityData = async (e) => {
     e.preventDefault();
