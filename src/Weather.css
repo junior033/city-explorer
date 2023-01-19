@@ -1,0 +1,13 @@
+.dayCard{
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+  border: 1px solid black;
+  box-shadow: 2px 2px 8px;
+  border-radius: 6%;
+
+}
+
+.card-body{
+  align-items: center;
+}
