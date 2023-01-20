@@ -1,5 +1,4 @@
 import React from "react";
-import {Card} from 'react-bootstrap';
 import CityMovies from "./CityMovies";
 
 class Movies extends React.Component{
